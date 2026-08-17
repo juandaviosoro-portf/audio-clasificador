@@ -52,7 +52,7 @@ def configurar_gemini(api_key):
 
     try:
         genai.configure(api_key=api_key)
-        _modelo_gemini = genai.GenerativeModel('gemini-2.0-flash')
+        _modelo_gemini = genai.GenerativeModel('gemini-3.6-flash')
         logger.info("Gemini configurado correctamente.")
         return True
     except Exception as e:
