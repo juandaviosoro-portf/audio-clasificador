@@ -336,54 +336,37 @@ pip install -r requirements.txt
 
 ## Guía para Presentación Universitaria
 
-Procedimiento exacto para llevar el proyecto a otro computador:
+Procedimiento exacto para llevar el proyecto a otro computador el día de la demostración:
 
 ### Preparar en tu computador
 
-1. Asegurate de que todo funcione ejecutando `python app.py`
-2. Copiá **toda** la carpeta `audio-clasificador` a un USB
-   - Si querés un historial limpio, borrá `database/app.db` antes de copiar
-   - La BD se va a crear sola al arrancar la app
+1. Asegurate de que todo funcione ejecutando la app.
+2. Asegurate de haber subido los últimos cambios a tu repositorio de GitHub.
+3. Copiá tu archivo `.env` a un USB para no tener que buscar tu clave de Gemini en la presentación.
 
 ### En el computador de la presentación
 
-1. **Verificar Python**:
+1. **Clonar el proyecto**:
+   Abrí una terminal (PowerShell o CMD) y ejecutá:
    ```bash
-   python --version
-   ```
-   Si no está instalado, instalarlo desde python.org
-
-2. **Verificar FFmpeg**:
-   ```bash
-   ffmpeg -version
-   ```
-   Si no está instalado:
-   - Windows: `choco install ffmpeg` o descargar manualmente
-   - La app va a funcionar para análisis de texto sin FFmpeg
-
-3. **Copiar el proyecto desde el USB** a una carpeta en el escritorio
-
-4. **Abrir terminal** en la carpeta del proyecto
-
-5. **Crear entorno virtual e instalar**:
-   ```bash
-   python -m venv venv
-   venv\Scripts\activate
-   pip install -r requirements.txt
+   git clone https://github.com/juandaviosoro-portf/audio-clasificador.git
+   cd audio-clasificador
    ```
 
-6. **Configurar .env**:
-   ```bash
-   copy .env.example .env
-   ```
-   Editá el `.env` y poné tu API key de Gemini
+2. **Pegar el `.env`**:
+   Copiá el archivo `.env` desde tu USB y pegalo dentro de la carpeta `audio-clasificador`.
 
-7. **Ejecutar**:
-   ```bash
-   python app.py
-   ```
+3. **Instalación y Ejecución Automática**:
+   Hacé **doble clic en el archivo `instalar_y_ejecutar.bat`**.
+   
+   Este script se encargará mágicamente de:
+   - Verificar que Python esté instalado.
+   - Crear el entorno virtual.
+   - Instalar las dependencias (Flask, Whisper, Gemini, etc.).
+   - Iniciar el servidor web.
+   - Abrir automáticamente el navegador en `http://localhost:5000`.
 
-8. **Abrir** http://localhost:5000 en el navegador
+*(Nota: La primera vez que lo ejecutes tardará un par de minutos instalando todo. Las siguientes veces arrancará en 1 segundo).*
 
 ### Demostración sugerida
 
