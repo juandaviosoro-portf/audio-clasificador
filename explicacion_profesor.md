@@ -1,31 +1,35 @@
 # Guía para mi presentación
 
-Acá anoto lo más importante para acordarme qué decir cuando tenga que presentar el proyecto.
+Acá anoto lo más importante para acordarme qué decir cuando tenga que explicarle el proyecto al profesor.
 
 ## 1. ¿Qué es esto? (Resumen rápido)
-Es un sistema que hice para automatizar la atención al cliente. Básicamente, agarra un audio (o texto), lo lee, y usa inteligencia artificial para entender qué quiere el cliente. Te dice si es una venta, un reclamo, soporte, y además te marca la prioridad para saber a quién atender primero.
+Es un sistema diseñado para automatizar la atención al cliente. Toma un audio (o texto), lo transcribe a texto y usa inteligencia artificial (LLMs) para entender la intención del cliente. Clasifica el mensaje (ej: Venta, Soporte, Reclamo) y le asigna una prioridad para saber a quién atender primero.
 
-## 2. ¿Con qué lo armé? (Tecnologías)
-- **Backend:** Usé Python con Flask porque es súper rápido para armar servidores y se lleva muy bien con las librerías de IA.
-- **Base de datos:** SQLite. No quería complicarme armando un servidor SQL aparte, así que guardo todo local para que la app sea fácil de mover.
-- **Frontend:** HTML, CSS y JavaScript puro con Bootstrap para que se vea lindo y moderno sin volverme loco con los estilos.
-- **La IA:**
-  - **Whisper (OpenAI):** Este es el modelo que pasa la voz a texto. Es gratis y súper preciso.
-  - **Gemini (Google):** A esta API le mando el texto y le pido que analice la intención y me devuelva un JSON con la categoría y la prioridad.
+## 2. Tecnologías utilizadas
+Elegí estas herramientas por ser modernas y eficientes:
+- **Backend:** Python con Flask. Es ideal y rápido para integrar modelos de IA.
+- **Base de datos:** SQLite con SQLAlchemy (ORM). Así la base de datos es un archivo local y la app es 100% portable.
+- **Frontend:** HTML5, CSS y JavaScript Vanilla, usando Bootstrap 5 para el diseño responsive.
+- **Inteligencia Artificial:**
+  - **Whisper (OpenAI):** Usado para *Speech-to-Text* (pasar la voz a texto localmente).
+  - **Gemini (Google):** Usado para analizar la semántica del texto y devolver un JSON estructurado con la clasificación.
 
-## 3. ¿Cómo es el recorrido del dato?
-1. El usuario graba en la web.
-2. El navegador le manda ese archivo a Flask.
-3. Flask llama a Whisper para sacar el texto.
-4. Flask le manda el texto a Gemini.
-5. Gemini me devuelve la respuesta, la guardo en la base de datos y se la muestro al usuario sin tener que recargar la página (usando JavaScript asíncrono).
+## 3. ¿Cómo viajan los datos? (El flujo)
+1. El usuario graba un audio en el navegador usando la API de JavaScript.
+2. El frontend envía el audio por POST (AJAX) al backend (`app.py`).
+3. Flask le pasa el audio a Whisper, que devuelve el texto.
+4. Flask le envía ese texto a la API de Gemini con un *prompt* estricto.
+5. Gemini devuelve un JSON con la categoría y prioridad, Flask lo guarda en SQLite y se lo manda de vuelta al frontend para mostrarlo en pantalla.
 
-## 4. ¿Cómo ordené el código?
-Traté de separarlo un poco estilo MVC para que no sea un fideo:
-- `app.py` tiene las rutas principales.
-- En la carpeta `services/` metí toda la lógica pesada separada: `transcriptor.py` (lo de Whisper) y `clasificador.py` (lo de Gemini).
-- Y en `templates/` y `static/` están las vistas de la web.
+## 4. Estructura del código (Cómo está organizado)
+Para que el código sea profesional y no un "fideo", separé las responsabilidades (similar a MVC):
 
-## 5. El detalle que suma puntos
-- **El Plan B (Fallback):** Si se me cae el internet o la API de Gemini falla en la presentación, armé un sistema básico que cuenta palabras clave y trata de adivinar la categoría igual. Así la app no se rompe nunca.
-- **Fácil instalación:** Armé un script (`instalar_y_ejecutar.bat`) que instala Python, las librerías, levanta el servidor y abre el navegador con un solo doble clic. Ideal para no estar escribiendo comandos frente a todo el mundo.
+- **`app.py` (Controlador):** Es el corazón. Recibe las peticiones web, llama a las IAs, guarda en la base de datos y devuelve la respuesta.
+- **`services/transcriptor.py`:** Se encarga exclusivamente de usar Whisper para convertir el archivo de audio en texto.
+- **`services/clasificador.py`:** Se conecta con la API de Gemini enviándole el texto y estructurando su respuesta.
+- **`models/consulta.py` (Modelo):** Define la estructura de las tablas de la base de datos usando SQLAlchemy.
+- **`templates/` y `static/` (Vistas):** Tienen el HTML (con Jinja2), CSS y JS para la interfaz del usuario.
+
+## 5. El detalle que suma puntos (Para presumir)
+- **Tolerancia a fallos (Fallback):** Si me quedo sin internet en la presentación o la API de Gemini falla, programé un algoritmo local de respaldo. Este lee el texto, busca palabras clave y adivina la categoría, evitando que la app "crashee".
+- **Despliegue automático:** Programé el script `instalar_y_ejecutar.bat` que instala Python, las dependencias y levanta el servidor con un doble clic. Así no tengo que configurar nada a mano frente al profesor.
