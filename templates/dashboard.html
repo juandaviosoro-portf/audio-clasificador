@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}AudioClasifica - Dashboard{% endblock %}
+
+{% block content %}
+<div class="fade-in">
+    <h1 class="page-title mb-4">
+        <i class="bi bi-graph-up gradient-text"></i>
+        Dashboard
+    </h1>
+
+    <!-- KPIs -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="kpi-card" style="--accent: #6c5ce7">
+                <div class="kpi-icon"><i class="bi bi-chat-dots"></i></div>
+                <div class="kpi-value" id="kpi-total">0</div>
+                <div class="kpi-label">Total Consultas</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="kpi-card" style="--accent: #00b894">
+                <div class="kpi-icon"><i class="bi bi-mic"></i></div>
+                <div class="kpi-value" id="kpi-audios">0</div>
+                <div class="kpi-label">Audios Procesados</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="kpi-card" style="--accent: #fdcb6e">
+                <div class="kpi-icon"><i class="bi bi-trophy"></i></div>
+                <div class="kpi-value" id="kpi-top-cat">—</div>
+                <div class="kpi-label">Top Categoría</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="kpi-card" style="--accent: #e17055">
+                <div class="kpi-icon"><i class="bi bi-bullseye"></i></div>
+                <div class="kpi-value" id="kpi-confianza">0%</div>
+                <div class="kpi-label">Confianza Prom.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-5">
+            <div class="glass-card p-4 h-100">
+                <h6 class="fw-semibold mb-3"><i class="bi bi-pie-chart me-2"></i>Distribución por Categoría</h6>
+                <div class="chart-container">
+                    <canvas id="chart-categorias"></canvas>
+                </div>
+                <div id="sin-datos-categorias" class="text-center py-4 d-none">
+                    <i class="bi bi-inbox display-4 text-body-secondary"></i>
+                    <p class="text-body-secondary mt-2">Todavía no hay datos</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="glass-card p-4 h-100">
+                <h6 class="fw-semibold mb-3"><i class="bi bi-graph-up-arrow me-2"></i>Consultas por Día (Últimos 7 días)</h6>
+                <div class="chart-container-line">
+                    <canvas id="chart-tendencia"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Distribución por prioridad + Últimas consultas -->
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="glass-card p-4 h-100">
+                <h6 class="fw-semibold mb-3"><i class="bi bi-exclamation-triangle me-2"></i>Por Prioridad</h6>
+                <div id="lista-prioridades">
+                    <div class="priority-bar mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="badge bg-danger bg-opacity-25 text-danger">ALTA</span>
+                            <span class="fw-semibold" id="prio-alta">0</span>
+                        </div>
+                        <div class="progress" style="height: 8px">
+                            <div class="progress-bar bg-danger" id="prio-alta-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="priority-bar mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="badge bg-warning bg-opacity-25 text-warning">MEDIA</span>
+                            <span class="fw-semibold" id="prio-media">0</span>
+                        </div>
+                        <div class="progress" style="height: 8px">
+                            <div class="progress-bar bg-warning" id="prio-media-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div class="priority-bar">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="badge bg-success bg-opacity-25 text-success">BAJA</span>
+                            <span class="fw-semibold" id="prio-baja">0</span>
+                        </div>
+                        <div class="progress" style="height: 8px">
+                            <div class="progress-bar bg-success" id="prio-baja-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="glass-card p-4 h-100">
+                <h6 class="fw-semibold mb-3"><i class="bi bi-clock-history me-2"></i>Últimas Consultas</h6>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0" id="tabla-ultimas">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Tipo</th>
+                                <th>Categoría</th>
+                                <th>Confianza</th>
+                                <th>Prioridad</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-ultimas">
+                            <tr>
+                                <td colspan="5" class="text-center text-body-secondary py-4">
+                                    <i class="bi bi-inbox me-2"></i>No hay consultas todavía
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

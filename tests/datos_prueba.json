@@ -1,0 +1,52 @@
+[
+    {
+        "texto": "Hola, quiero saber el precio del plan empresarial y si tienen algún descuento por pago anual",
+        "categoria_esperada": "VENTAS",
+        "descripcion": "Consulta comercial sobre precios y descuentos"
+    },
+    {
+        "texto": "Buenas tardes, mi internet no funciona desde ayer por la noche, ya reinicié el router pero sigue sin servicio",
+        "categoria_esperada": "SOPORTE",
+        "descripcion": "Problema técnico con servicio de internet"
+    },
+    {
+        "texto": "Necesito que me envíen la factura del mes pasado porque no me llegó al correo electrónico",
+        "categoria_esperada": "FACTURACIÓN",
+        "descripcion": "Solicitud de factura"
+    },
+    {
+        "texto": "Compré un televisor hace dos semanas y ya se le dañó la pantalla, quiero hacer uso de la garantía",
+        "categoria_esperada": "GARANTÍA",
+        "descripcion": "Reclamo de garantía por producto defectuoso"
+    },
+    {
+        "texto": "¿Me podrían decir cuál es el horario de atención de la sucursal del centro y qué documentos necesito llevar?",
+        "categoria_esperada": "INFORMACIÓN",
+        "descripcion": "Consulta de información general"
+    },
+    {
+        "texto": "Estoy muy molesto porque llevo tres días esperando a que me solucionen el problema y nadie me da respuesta, esto es inaceptable",
+        "categoria_esperada": "RECLAMO",
+        "descripcion": "Reclamo por mal servicio"
+    },
+    {
+        "texto": "Quiero cotizar un paquete de 100 licencias del software para mi empresa con soporte incluido",
+        "categoria_esperada": "VENTAS",
+        "descripcion": "Cotización empresarial"
+    },
+    {
+        "texto": "El sistema me arroja un error 500 cada vez que intento generar un reporte, necesito ayuda urgente",
+        "categoria_esperada": "SOPORTE",
+        "descripcion": "Error técnico urgente"
+    },
+    {
+        "texto": "Me cobraron dos veces la mensualidad de julio, necesito que me hagan la devolución del dinero",
+        "categoria_esperada": "FACTURACIÓN",
+        "descripcion": "Cobro duplicado"
+    },
+    {
+        "texto": "Hola buenas tardes, gracias por atenderme",
+        "categoria_esperada": "OTRO",
+        "descripcion": "Saludo sin intención clara"
+    }
+]

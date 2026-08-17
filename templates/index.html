@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}AudioClasifica - Analizar Audio{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Columna izquierda: entrada -->
+    <div class="col-lg-6">
+        <div class="fade-in">
+            <h1 class="page-title mb-4">
+                <i class="bi bi-mic-fill gradient-text"></i>
+                Analizar Audio
+            </h1>
+
+            <!-- Tabs de entrada -->
+            <ul class="nav nav-pills custom-pills mb-4" id="tabs-entrada" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="tab-subir" data-bs-toggle="pill" data-bs-target="#panel-subir" type="button" role="tab">
+                        <i class="bi bi-cloud-arrow-up me-1"></i> Subir Audio
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-grabar" data-bs-toggle="pill" data-bs-target="#panel-grabar" type="button" role="tab">
+                        <i class="bi bi-record-circle me-1"></i> Grabar
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="tab-texto" data-bs-toggle="pill" data-bs-target="#panel-texto" type="button" role="tab">
+                        <i class="bi bi-chat-text me-1"></i> Texto
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <!-- Panel: Subir audio -->
+                <div class="tab-pane fade show active" id="panel-subir" role="tabpanel">
+                    <div class="glass-card p-4">
+                        <div class="drop-zone" id="zona-drop">
+                            <div class="drop-zone-content">
+                                <i class="bi bi-cloud-arrow-up display-3 mb-3 gradient-text"></i>
+                                <h5>Arrastrá tu archivo de audio acá</h5>
+                                <p class="text-body-secondary mb-3">o hacé clic para seleccionar</p>
+                                <span class="badge bg-body-secondary text-body-secondary">MP3, WAV, OGG, M4A</span>
+                            </div>
+                            <input type="file" id="input-archivo" accept=".mp3,.wav,.ogg,.m4a,.webm" class="d-none">
+                        </div>
+
+                        <!-- Archivo seleccionado -->
+                        <div id="archivo-seleccionado" class="mt-3 d-none">
+                            <div class="d-flex align-items-center gap-3 p-3 rounded-3 bg-body-tertiary">
+                                <i class="bi bi-file-earmark-music fs-3 gradient-text"></i>
+                                <div class="flex-grow-1">
+                                    <div class="fw-semibold" id="nombre-archivo"></div>
+                                    <small class="text-body-secondary" id="tamano-archivo"></small>
+                                </div>
+                                <button class="btn btn-sm btn-outline-danger" onclick="limpiarArchivo()" title="Quitar archivo">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary btn-glow w-100 mt-4" id="btn-analizar-audio" onclick="analizarAudio()" disabled>
+                            <i class="bi bi-cpu me-2"></i> Analizar con IA
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Panel: Grabar audio -->
+                <div class="tab-pane fade" id="panel-grabar" role="tabpanel">
+                    <div class="glass-card p-4 text-center">
+                        <div class="mb-4">
+                            <button class="btn-grabar" id="btn-grabar" onclick="toggleGrabacion()">
+                                <i class="bi bi-mic-fill" id="icono-grabar"></i>
+                            </button>
+                        </div>
+
+                        <p class="mb-2" id="estado-grabacion">Presioná para grabar</p>
+                        <p class="text-body-secondary mb-0" id="tiempo-grabacion">00:00</p>
+
+                        <!-- Audio grabado -->
+                        <div id="audio-grabado" class="mt-4 d-none">
+                            <audio id="player-grabado" controls class="w-100 mb-3"></audio>
+                            <button class="btn btn-primary btn-glow w-100" onclick="analizarGrabacion()">
+                                <i class="bi bi-cpu me-2"></i> Analizar con IA
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel: Texto manual -->
+                <div class="tab-pane fade" id="panel-texto" role="tabpanel">
+                    <div class="glass-card p-4">
+                        <label class="form-label fw-semibold mb-2">
+                            <i class="bi bi-chat-dots me-1"></i> Texto del cliente
+                        </label>
+                        <textarea class="form-control custom-textarea" id="input-texto" rows="6"
+                            placeholder="Escribí o pegá acá lo que dijo el cliente...&#10;&#10;Ejemplo: Hola, quiero saber el precio del plan empresarial y si tienen descuento por pago anual."></textarea>
+
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <small class="text-body-secondary"><span id="contador-chars">0</span>/5000</small>
+                            <button class="btn btn-primary btn-glow" id="btn-analizar-texto" onclick="analizarTexto()" disabled>
+                                <i class="bi bi-cpu me-2"></i> Clasificar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Columna derecha: resultados -->
+    <div class="col-lg-6">
+        <!-- Loader -->
+        <div id="loader-analisis" class="d-none">
+            <div class="glass-card p-5 text-center">
+                <div class="spinner-container mb-4">
+                    <div class="spinner-ring"></div>
+                    <i class="bi bi-cpu spinner-icon"></i>
+                </div>
+                <h5 class="mb-2" id="loader-titulo">Procesando...</h5>
+                <p class="text-body-secondary mb-0" id="loader-detalle">Transcribiendo audio con Whisper</p>
+            </div>
+        </div>
+
+        <!-- Resultados -->
+        <div id="seccion-resultados" class="d-none">
+            <h2 class="page-title mb-4">
+                <i class="bi bi-clipboard-check gradient-text"></i>
+                Resultado
+            </h2>
+
+            <!-- Tarjetas de resultado -->
+            <div class="row g-3 mb-4">
+                <div class="col-6">
+                    <div class="result-card slide-up" style="--delay: 0.1s">
+                        <div class="result-label">Categoría</div>
+                        <div class="result-value" id="res-categoria">—</div>
+                        <div class="result-badge" id="badge-categoria"></div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="result-card slide-up" style="--delay: 0.2s">
+                        <div class="result-label">Confianza</div>
+                        <div class="result-value" id="res-confianza">—</div>
+                        <div class="progress mt-2" style="height: 6px;">
+                            <div class="progress-bar" id="barra-confianza" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="result-card slide-up" style="--delay: 0.3s">
+                        <div class="result-label">Prioridad</div>
+                        <div class="result-value" id="res-prioridad">—</div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="result-card slide-up" style="--delay: 0.4s">
+                        <div class="result-label">Duración</div>
+                        <div class="result-value" id="res-duracion">—</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resumen -->
+            <div class="glass-card p-4 mb-3 slide-up" style="--delay: 0.5s">
+                <h6 class="fw-semibold mb-2"><i class="bi bi-chat-square-text me-2"></i>Resumen</h6>
+                <p class="mb-0" id="res-resumen">—</p>
+            </div>
+
+            <!-- Transcripción -->
+            <div class="glass-card p-4 slide-up" style="--delay: 0.6s">
+                <h6 class="fw-semibold mb-2"><i class="bi bi-body-text me-2"></i>Transcripción</h6>
+                <p class="mb-0 transcripcion-text" id="res-transcripcion">—</p>
+            </div>
+        </div>
+
+        <!-- Estado vacío -->
+        <div id="estado-vacio" class="text-center py-5">
+            <div class="empty-state">
+                <i class="bi bi-soundwave display-1 mb-3 gradient-text"></i>
+                <h4>Subí, grabá o escribí</h4>
+                <p class="text-body-secondary">El resultado del análisis aparecerá acá</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}
